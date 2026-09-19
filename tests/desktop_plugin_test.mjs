@@ -52,7 +52,8 @@ writeFileSync(join(OUT, 'react.mjs'), reactStub)
 writeFileSync(join(OUT, 'react-jsx-runtime.mjs'), jsxStub)
 
 // ---- rewrite bare specifiers like the loader does -------------------------
-let source = readFileSync(SRC, 'utf8')
+const rawSource = readFileSync(SRC, 'utf8')
+let source = rawSource
 source = source
   .replaceAll(`from '@hermes/plugin-sdk'`, `from '${pathToFileURL(join(OUT, 'sdk.mjs')).href}'`)
   .replaceAll(`from 'react/jsx-runtime'`, `from '${pathToFileURL(join(OUT, 'react-jsx-runtime.mjs')).href}'`)
@@ -68,6 +69,21 @@ const check = (label, cond, extra = '') => {
   console.log(`${cond ? 'PASS' : 'FAIL'}  ${label}${!cond && extra ? ` — ${extra}` : ''}`)
   if (!cond) fails.push(label)
 }
+
+// ---- the app loader's own import scanner (mirrors runtime-loader.ts) ------
+// Any bare specifier outside the SDK map fails the load. The scanner's regex
+// is UNANCHORED, so strings/comments containing `from '` / `import "` trip it
+// as well — keep the source free of both classes.
+const SDK_MAP = new Set(['@hermes/plugin-sdk', 'react', 'react/jsx-runtime'])
+const importSpecifierRe = () => /(from\s*|import\s*\(\s*|import\s+)(['"])([^'"]+)\2/g
+const unsupported = new Set()
+for (const m of rawSource.matchAll(importSpecifierRe())) {
+  const spec = m[3]
+  if (spec && !/^[./]/.test(spec) && !/^[a-z][a-z0-9+.-]*:/i.test(spec) && !SDK_MAP.has(spec)) {
+    unsupported.add(spec)
+  }
+}
+check('loader scanner finds no unsupported specifiers', unsupported.size === 0, [...unsupported].join(' | '))
 
 check('default export has id', plugin && plugin.id === 'provider-copy', JSON.stringify(plugin && plugin.id))
 check('name present', typeof plugin.name === 'string' && plugin.name.length > 0)

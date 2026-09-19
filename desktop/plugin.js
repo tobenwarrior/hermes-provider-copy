@@ -6,7 +6,7 @@
  * `dashboard/plugin_api.py`; this half is the picker UI and talks to it through
  * `ctx.rest` (the plugin's own `/api/plugins/provider-copy/` namespace). That
  * door is profile-aware, so every request carries the app's active profile and
- * the backend can default "Copy keys from" to the profile you're on.
+ * the backend can default `Copy keys from` to the profile you're on.
  *
  * Surface: a full page (sidebar row + route) and a ⌘K palette row. The plugin
  * SDK has no settings-page injection point, so this page is the plugin's own
@@ -47,7 +47,7 @@ const STRINGS = {
     title: 'Provider Copy',
     subtitle:
       'Copy the provider keys set on one profile onto your other bots — a one-time copy, nothing stays linked afterwards.',
-    sourceLabel: 'Copy keys from',
+    sourceLabel: 'Copy keys from:',
     keysReadyOne: '1 provider key ready',
     keysReady: n => `${n} provider keys ready`,
     noKeys: 'No provider keys are set on this profile yet',
