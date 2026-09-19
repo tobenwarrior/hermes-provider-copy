@@ -1,0 +1,7 @@
+{
+  "name": "provider-copy",
+  "label": "Provider Copy",
+  "description": "Backend for the Provider Copy desktop plugin — one-time copy of provider credentials across profiles.",
+  "version": "1.0.0",
+  "api": "plugin_api.py"
+}

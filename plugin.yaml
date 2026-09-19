@@ -1,0 +1,13 @@
+name: provider-copy
+version: 1.0.0
+description: Copy provider API keys (and provider base-URL overrides) from one profile
+  to your other profiles — a one-time, explicit copy. OAuth sign-ins and messaging
+  bot tokens never travel.
+manifest_version: 1
+kind: standalone
+author: tobenwarrior
+license: MIT
+homepage: https://github.com/tobenwarrior/hermes-provider-copy
+capabilities: []
+requires_env: []
+python_dependencies: []
